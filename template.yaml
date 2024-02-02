@@ -26,15 +26,6 @@ Resources:
             Path: /repos
             Method: GET
             RestApiId: !Ref CodeCupidApi
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-          - index.mts
-        External:
-          - '@aws-sdk/*'
-          - aws-sdk
-        Minify: false
   GetRepo:
     Type: AWS::Serverless::Function
     Properties:
@@ -61,15 +52,6 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref Repos
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-          - index.mts
-        External:
-          - '@aws-sdk/*'
-          - aws-sdk
-        Minify: false
   UpdateRepo:
     Type: AWS::Serverless::Function
     Properties:
@@ -96,15 +78,6 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref Repos
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-          - index.mts
-        External:
-          - '@aws-sdk/*'
-          - aws-sdk
-        Minify: false
   CodeCupidApi:
     Type: AWS::Serverless::Api
     Properties:
