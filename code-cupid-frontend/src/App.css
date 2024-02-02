@@ -1,42 +1,128 @@
-#root {
-  max-width: 1280px;
+.app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+header > h1, p {
+  text-align: center;
+}
+
+header > p {
+  margin-top: 2rem;
+}
+
+header > h1 {
+  position: relative;
+  top: 6rem;
+}
+
+main {
+  flex: 1;
   margin: 0 auto;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+footer {
   padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.heart-container {
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 500px;
+  margin: auto;
+  opacity: 50%;
+  z-index: -1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.heart {
+  position: relative;
+  background-color: var(--heartColor);
+  width: 100px;
+  height: 100px;
+  transform: rotate(-45deg);
 }
 
-.card {
-  padding: 2em;
+.heart::after {
+  content:'';
+  background-color: var(--heartColor);
+  width: 100px;
+  height: 100px;
+  left: 50px;
+  position: absolute;
+  border-radius: 50%;
 }
 
-.read-the-docs {
-  color: #888;
+.heart::before {
+  content:'';
+  position: absolute;
+  top: -50px;
+  width: 100px;
+  height: 100px;
+  background-color: var(--heartColor);
+  border-radius: 50%;
+}
+
+.arrow {
+  width: 300px;
+  height: 10px;
+  background-color: var(--arrowColor);
+  z-index: 0;
+  position: absolute;
+  transform: rotate(-25deg);
+  margin-left: 20px;
+  margin-top: -20px;
+}
+
+.arrow::after {
+  content:'';
+  position: absolute;
+  right: -10px;
+  top: -15px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--arrowColor);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform: rotate(90deg);
+}
+
+.arrow-stick {
+  width: 30px;
+  height: 6px;
+  background-color: var(--arrowColor);
+  z-index: 999;
+}
+
+.arrow-stick:nth-child(1){
+  position: absolute;
+  transform: rotate(45deg);
+  top: -12px;
+}
+
+.arrow-stick:nth-child(2){
+  position: absolute;
+  transform: rotate(-45deg);
+  top: 12px;
+}
+
+
+.arrow-stick:nth-child(3){
+  position: absolute;
+  transform: rotate(-45deg);
+  top: 12px;
+  left: 20px;
+}
+
+
+.arrow-stick:nth-child(4){
+  position: absolute;
+  transform: rotate(45deg);
+  top: -12px;
+  left: 20px;
 }
