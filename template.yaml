@@ -1,83 +1,5 @@
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  ListRepos:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-ListRepos
-      Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
-        - ResourceName: ListRepos
-      CodeUri: src/ListRepos
-      Handler: index.handler
-      Runtime: nodejs20.x
-      MemorySize: 1024
-      Timeout: 30
-      Tracing: Active
-      Environment:
-        Variables:
-          REPOS_TABLE_NAME: !Ref Repos
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref Repos
-      Events:
-        CodeCupidApiGETrepos:
-          Type: Api
-          Properties:
-            Path: /repos
-            Method: GET
-            RestApiId: !Ref CodeCupidApi
-  GetRepo:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-GetRepo
-      Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
-        - ResourceName: GetRepo
-      CodeUri: src/GetRepo
-      Handler: index.handler
-      Runtime: nodejs20.x
-      MemorySize: 1024
-      Timeout: 30
-      Tracing: Active
-      Events:
-        CodeCupidApiGETreposid:
-          Type: Api
-          Properties:
-            Path: /repos/{id}
-            Method: GET
-            RestApiId: !Ref CodeCupidApi
-      Environment:
-        Variables:
-          REPOS_TABLE_NAME: !Ref Repos
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref Repos
-  UpdateRepo:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-UpdateRepo
-      Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
-        - ResourceName: UpdateRepo
-      CodeUri: src/UpdateRepo
-      Handler: index.handler
-      Runtime: nodejs20.x
-      MemorySize: 1024
-      Timeout: 30
-      Tracing: Active
-      Events:
-        CodeCupidApiPUTreposid:
-          Type: Api
-          Properties:
-            Path: /repos/{id}
-            Method: PUT
-            RestApiId: !Ref CodeCupidApi
-      Environment:
-        Variables:
-          REPOS_TABLE_NAME: !Ref Repos
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref Repos
   AddRepo:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,50 +13,64 @@ Resources:
       MemorySize: 1024
       Timeout: 30
       Tracing: Active
-      Events:
-        CodeCupidApiPOSTrepos:
-          Type: Api
-          Properties:
-            Path: /repos
-            Method: POST
-            RestApiId: !Ref CodeCupidApi
       Environment:
         Variables:
           REPOS_TABLE_NAME: !Ref Repos
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Repos
+      Events:
+        CodeCupidApiPOSTrepo:
+          Type: Api
+          Properties:
+            Path: /repo
+            Method: POST
+            RestApiId: !Ref CodeCupidApi
+  ListReposByLanguage:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-ListReposByLanguage
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: ListReposByLanguage
+      CodeUri: src/ListReposByLanguage
+      Handler: index.handler
+      Runtime: nodejs20.x
+      MemorySize: 1024
+      Timeout: 30
+      Tracing: Active
+      Environment:
+        Variables:
+          REPOS_TABLE_NAME: !Ref Repos
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Repos
+      Events:
+        CodeCupidApiGETreposlanguage:
+          Type: Api
+          Properties:
+            Path: /repos/{language}
+            Method: GET
+            RestApiId: !Ref CodeCupidApi
   CodeCupidApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: !Sub
         - ${ResourceName} From Stack ${AWS::StackName}
         - ResourceName: CodeCupidApi
-      StageName: Prod
+      StageName: prod
       DefinitionBody:
         openapi: '3.0'
         info: {}
         paths:
-          /repos/{id}:
+          /repos/{language}:
             get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetRepo.Arn}/invocations
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListReposByLanguage.Arn}/invocations
               responses: {}
-            put:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdateRepo.Arn}/invocations
-              responses: {}
-          /repos:
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListRepos.Arn}/invocations
-              responses: {}
+          /repo:
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
@@ -157,14 +93,23 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: language
+          AttributeType: S
       BillingMode: PAY_PER_REQUEST
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: languageIndex
+          KeySchema:
+            - AttributeName: language
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 Outputs:
   ApiURL:
     Description: The URL for the API
-    Value: !Sub https://${CodeCupidApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+    Value: !Sub https://${CodeCupidApi}.execute-api.${AWS::Region}.amazonaws.com/prod/
   FrontendURL:
     Description: The URL of the S3 bucket containing the built frontend
     Value: !GetAtt Frontend.WebsiteURL
@@ -173,7 +118,5 @@ Metadata:
     Group:
       Label: API Compute
       Members:
-        - ListRepos
-        - UpdateRepo
-        - GetRepo
+        - ListReposByLanguage
         - AddRepo

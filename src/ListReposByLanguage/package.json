@@ -1,5 +1,5 @@
 {
-  "name": "function",
+  "name": "list-repos-by-language-function",
   "version": "1.0.0",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.506.0",

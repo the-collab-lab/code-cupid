@@ -1,5 +1,5 @@
 {
-  "name": "function",
+  "name": "add-repo-function",
   "version": "1.0.0",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.506.0",

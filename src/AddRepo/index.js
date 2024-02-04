@@ -13,6 +13,7 @@ exports.handler = async (event) => {
     };
   }
 
+  // Assuming this is submitted in a format like https://github.com/myOrg/myRepo
   const extractData = data.repoURL.replace(/(^\w+:|^)\/\//, "").split("/");
   const repoOwner = extractData[1];
   const repoName = extractData[2];
@@ -29,7 +30,7 @@ exports.handler = async (event) => {
   const input = {
     id: repoId,
     link: data.repoURL,
-    language: data.language,
+    language: data.language.toLowerCase(),
     createdAt: new Date().getTime().toString(),
   };
 
