@@ -129,6 +129,13 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+Outputs:
+  ApiURL:
+    Description: The URL for the API
+    Value: !Sub https://${CodeCupidApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  FrontendURL:
+    Description: The URL of the S3 bucket containing the built frontend
+    Value: !GetAtt Frontend.WebsiteURL
 Metadata:
   AWS::Composer::Groups:
     Group:
