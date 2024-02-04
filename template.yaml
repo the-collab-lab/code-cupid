@@ -78,6 +78,32 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref Repos
+  AddRepo:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-AddRepo
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: AddRepo
+      CodeUri: src/AddRepo
+      Handler: index.handler
+      Runtime: nodejs20.x
+      MemorySize: 1024
+      Timeout: 30
+      Tracing: Active
+      Events:
+        CodeCupidApiPOSTrepos:
+          Type: Api
+          Properties:
+            Path: /repos
+            Method: POST
+            RestApiId: !Ref CodeCupidApi
+      Environment:
+        Variables:
+          REPOS_TABLE_NAME: !Ref Repos
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Repos
   CodeCupidApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -108,6 +134,12 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListRepos.Arn}/invocations
+              responses: {}
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddRepo.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
       TracingEnabled: true
@@ -144,3 +176,4 @@ Metadata:
         - ListRepos
         - UpdateRepo
         - GetRepo
+        - AddRepo
