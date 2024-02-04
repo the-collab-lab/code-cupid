@@ -3,6 +3,7 @@
 Demo repo for AWS App Composer meetup talk
 
 ## Architecture
+![application-composer-template yaml](https://github.com/the-collab-lab/code-cupid/assets/12616554/51b0745a-52cf-49ed-9c42-6e596809b066)
 
 ## Quickstart
 
