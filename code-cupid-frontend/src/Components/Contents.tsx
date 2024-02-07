@@ -34,7 +34,22 @@ function Contents() {
       if (url.host !== 'github.com') {
         setError('URL must be a valid GitHub URL');
       } else {
-        setSubmitted(true);
+        try {
+          const endpoint = `${API_URL}repo`;
+          const response = await fetch(endpoint);
+    
+          if (!response.ok) {
+            setError('Network response was not ok');
+          }
+    
+          const jsonData: ApiResponse[] = await response.json();
+          console.log(jsonData);
+          setRepos(jsonData);
+          setSubmitted(true);
+        } catch (error) {
+          console.error('There was a problem posting the data:', error);
+          setError(`Failed to post data: ${JSON.stringify(error)}`);
+        }
       }
     } else if (role === Role.Developer) {
       try {
@@ -42,15 +57,16 @@ function Contents() {
         const response = await fetch(endpoint);
   
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          setError('Network response was not ok');
         }
   
         const jsonData: ApiResponse[] = await response.json();
+        console.log(jsonData);
         setRepos(jsonData);
         setSubmitted(true);
       } catch (error) {
         console.error('There was a problem fetching the data:', error);
-        setError('Failed to fetch data. Please try again later.');
+        setError(`Failed to fetch data: ${JSON.stringify(error)}`);
       }
     }
   }

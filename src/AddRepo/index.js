@@ -2,13 +2,29 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 
 exports.handler = async (event) => {
-  // Log the event argument for debugging and for use in local development.
   console.log(JSON.stringify(event, undefined, 2));
-  const data = JSON.parse(event.body);
+  let data;
+  try {
+    data = JSON.parse(event.body);
+  } catch (error) {
+    // If there is an error parsing the JSON body, return an error response
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*", // Allows access from any origin
+        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS if needed
+      },
+      body: "Failed to parse body as JSON",
+    };
+  }
 
   if (!data.repoURL || !data.language) {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
       body: "repoURL and language are required fields",
     };
   }
@@ -21,6 +37,10 @@ exports.handler = async (event) => {
   if (!repoName || !repoOwner) {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
       body: "Invalid repoURL",
     };
   }
@@ -42,12 +62,28 @@ exports.handler = async (event) => {
   const client = new DynamoDBClient({ region: process.env.AWS_REGION });
   const ddbDocClient = DynamoDBDocumentClient.from(client);
 
-  console.log(`Adding repo ${repoId} to table ${process.env.REPOS_TABLE_NAME}`);
-  await ddbDocClient.send(new PutCommand(params));
-  console.log("Repo added to table, done");
+  try {
+    console.log(`Adding repo ${repoId} to table ${process.env.REPOS_TABLE_NAME}`);
+    await ddbDocClient.send(new PutCommand(params));
+    console.log("Repo added to table, done");
+  } catch (err) {
+    console.log(`Error adding repo to table: ${err}`);
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ message: "Failed to add repo to table" }),
+    };
+  }
 
   return {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify(input),
   };
 };
