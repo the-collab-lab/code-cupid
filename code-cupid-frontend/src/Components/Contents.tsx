@@ -2,8 +2,16 @@ import { FormEvent, useState } from 'react'
 import Form from './Form';
 import Result from './Result';
 import { Language, Role } from '../types';
+import { API_URL } from '../constants';
+
+interface ApiResponse {
+  id: number;
+  name: string;
+  // Add other fields based on the actual data structure
+}
 
 function Contents() {
+  const [repos, setRepos] = useState<ApiResponse[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,7 +25,7 @@ function Contents() {
     }
   }
 
-  const onSubmitHandler = (event: FormEvent<HTMLFormElement>, role: Role, language: Language, repo: string) => {
+  const onSubmitHandler = async (event: FormEvent<HTMLFormElement>, role: Role, language: Language, repo: string) => {
     event.preventDefault();
     console.log(role, language, repo);
 
@@ -29,14 +37,28 @@ function Contents() {
         setSubmitted(true);
       }
     } else if (role === Role.Developer) {
-      setSubmitted(true);
+      try {
+        const endpoint = `${API_URL}repos/${encodeURIComponent(language)}`;
+        const response = await fetch(endpoint);
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const jsonData: ApiResponse[] = await response.json();
+        setRepos(jsonData);
+        setSubmitted(true);
+      } catch (error) {
+        console.error('There was a problem fetching the data:', error);
+        setError('Failed to fetch data. Please try again later.');
+      }
     }
   }
 
   return (
     <main>
       {!submitted && <Form onSubmitHandler={onSubmitHandler} errorText={error} />}
-      {submitted && <Result />}
+      {submitted && <Result repos={repos} />}
     </main>
   );
 }

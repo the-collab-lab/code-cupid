@@ -1,8 +1,12 @@
-function Result() {
+type ResultProps = {
+  repos: []
+}
+
+function Result(props: ResultProps) {
 
   return (
     <div>
-      <p>Submitted!</p>
+      <p>{props.repos}</p>
     </div>
   );
 }

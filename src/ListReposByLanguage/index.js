@@ -5,9 +5,8 @@ const {
 } = require("@aws-sdk/lib-dynamodb");
 
 exports.handler = async (event) => {
-  // Log the event argument for debugging and for use in local development.
   console.log(JSON.stringify(event, undefined, 2));
-  // Get repos by language
+  
   const params = {
     TableName: process.env.REPOS_TABLE_NAME,
     IndexName: "languageIndex",
@@ -34,9 +33,7 @@ exports.handler = async (event) => {
     } else {
       response = Items;
       statusCode = 200;
-      console.log(
-        `Success getting repo for language: ${event.pathParameters.language}`
-      );
+      console.log(`Success getting repo for language: ${event.pathParameters.language}`);
     }
   } catch (err) {
     console.log(`Error: ${JSON.stringify(err, undefined, 2)}`);
@@ -46,6 +43,10 @@ exports.handler = async (event) => {
 
   return {
     statusCode,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify(response),
   };
 };
