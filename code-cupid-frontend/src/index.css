@@ -12,8 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  --link: #ff005d;
+  --link-hover: #e60054;
+  --select-focus: #8400ff;
   --select-border: #4a0b8e;
-  --select-focus: #ff005d;
   --select-arrow: var(--select-border);
   --heartColor: #ff005d;
   --arrowColor:	#ff005d;
@@ -27,11 +29,11 @@
 
 a {
   font-weight: 500;
-  color: #8400ff;
+  color: var(--link);
   text-decoration: inherit;
 }
 a:hover {
-  color: #4a0b8e;
+  color: var(--link-hover);
 }
 
 body {

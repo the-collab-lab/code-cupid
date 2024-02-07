@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { Language, Role } from '../types';
 
 type FormProps = {
@@ -15,8 +15,8 @@ function Form(props: FormProps) {
     setRepo(event.target.value);
   }
 
-  const message = role === Role.Developer ? `You are a ${role} and your love language is ${language}.` : `You are a ${role} and would like to add a ${language} codebase.`
-  const submitText = role === Role.Developer ? 'Match me!' : 'Add codebase'
+  const message = role === Role.Developer ? `You are a ${role} and your love language is ${language}.` : `You are a ${role} and would like to add a ${language} codebase.`;
+  const submitText = role === Role.Developer ? 'Match me!' : 'Add codebase';
 
   return (
     <form
@@ -65,4 +65,4 @@ function Form(props: FormProps) {
   );
 }
 
-export default Form
+export default Form;

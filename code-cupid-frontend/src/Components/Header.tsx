@@ -13,7 +13,7 @@ function Header() {
       </div>
       <p>Meet your coding match!</p>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

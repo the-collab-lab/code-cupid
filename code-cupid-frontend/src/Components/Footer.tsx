@@ -5,7 +5,7 @@ function Footer() {
     <footer>
       © {(new Date().getFullYear())} <a href='https://the-collab-lab.codes/'>The Collab Lab</a>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

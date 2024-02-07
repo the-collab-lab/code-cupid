@@ -1,7 +1,7 @@
-import Contents from './Components/Contents'
-import Footer from './Components/Footer'
-import Header from './Components/Header'
-import './App.css'
+import Contents from './Components/Contents';
+import Footer from './Components/Footer';
+import Header from './Components/Header';
+import './App.css';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Contents />
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
