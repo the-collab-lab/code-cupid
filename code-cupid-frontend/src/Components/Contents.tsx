@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import Form from './Form';
 import RepoTable from './RepoTable';
 import { ApiResponse, Language, Role } from '../types';
-import { API_URL } from '../constants';
+import { CODE_CUPID_API_URL } from '../constants';
 
 function Contents() {
   const [repos, setRepos] = useState<ApiResponse[]>([]);
@@ -47,14 +47,14 @@ function Contents() {
       } else {
         try {
           // Post the new repo URL
-          const endpoint = `${API_URL}/repo`;
+          const endpoint = `${CODE_CUPID_API_URL}/repo`;
           const result = await postData(endpoint, { repoURL: repo, language });
 
           setError('');
           setSuccess(`${result.id} sucessfully added!`);
 
           // Fetch all repos for the language, including the newly added one
-          const fetchEndpoint = `${API_URL}/repos/${encodeURIComponent(language)}`;
+          const fetchEndpoint = `${CODE_CUPID_API_URL}/repos/${encodeURIComponent(language)}`;
           const response = await fetch(fetchEndpoint);
     
           if (!response.ok) {
@@ -73,7 +73,7 @@ function Contents() {
     } else if (role === Role.Developer) {
       try {
         // Fetch all repos for the language
-        const endpoint = `${API_URL}/repos/${encodeURIComponent(language)}`;
+        const endpoint = `${CODE_CUPID_API_URL}/repos/${encodeURIComponent(language)}`;
         const response = await fetch(endpoint);
   
         if (!response.ok) {

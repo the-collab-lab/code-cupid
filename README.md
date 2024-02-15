@@ -67,3 +67,14 @@ createdAt: string - milliseconds since epoch (January 1, 1970 UTC) - generated b
 #### languageIndex
 
 Partition key: `language` - allows us to search by language
+
+## Running the frontend
+
+The Code Cupid frontend is a React app using Vite and written in TypeScript. To run the app locally, run the following:
+
+```bash
+cd code-cupid-frontend
+npm run start
+```
+
+Be sure to replace the endpoint in `code-cupid/code-cupid-frontend/src/constants.ts` with your own API Gateway endpoint.

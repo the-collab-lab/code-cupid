@@ -1,1 +1,1 @@
-export const API_URL = 'https://tc3wbhvt7k.execute-api.us-west-2.amazonaws.com/prod';
+export const CODE_CUPID_API_URL = import.meta.env.CODE_CUPID_API_URL;
